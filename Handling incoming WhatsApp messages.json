@@ -1,0 +1,96 @@
+{
+  "name": "Handling incoming WhatsApp messages",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "messages"
+        ],
+        "options": {}
+      },
+      "type": "n8n-nodes-base.whatsAppTrigger",
+      "typeVersion": 1,
+      "position": [
+        -192,
+        0
+      ],
+      "id": "f444a81d-17ae-4bca-a179-6e58387cc228",
+      "name": "WhatsApp Trigger",
+      "webhookId": "ba2ed769-c2c5-4f66-92ef-fe87bea670e2",
+      "credentials": {
+        "whatsAppTriggerApi": {
+          "id": "Op57o6W6Gl3wR0L4",
+          "name": "WhatsApp OAuth account trigger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        16,
+        0
+      ],
+      "id": "06533c78-f33a-4579-8e44-e9f4d9dafd53",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -128,
+        208
+      ],
+      "id": "0f91fef8-d82e-45bd-8a2b-2930648102de",
+      "name": "OpenAI Chat Model"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "WhatsApp Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "fcea9cce-2de2-43d9-9e64-b2f1543c6ead",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "19d68fe8a6f6fc1f2277f4efd0d93ed1478f86367c95a741531fcfab94f023b5"
+  },
+  "id": "W9BpBLBzzUeSUBTZ",
+  "tags": []
+}

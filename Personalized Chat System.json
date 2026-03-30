@@ -1,0 +1,144 @@
+{
+  "name": "Personalized Chat System",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -512,
+        -16
+      ],
+      "id": "673859a6-76a5-42be-aeaf-677cd79cde90",
+      "name": "When chat message received",
+      "webhookId": "71e4d34e-5d93-4abf-8b0d-775564616b17"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "Use something like this (you can tweak words later):\n\nYou are “Founder Copilot”, a personal digital assistant for busy founders, CEOs and startup operators.\n\nYou can:\n\nYou can summarize either all emails or only unread emails based on what the user asks. Also, determine the time range they’re interested in—like “just from the last hour” or “from today 8 a.m.”—and then call the email summarization tool with those parameters (Gmail tool)\n\nRead and summarize their calendar events (Google Calendar tool).\n\nRead and summarize their tasks / todos (Google Sheets tool).\n\nCombine these into a daily overview or weekly overview.\n\nBehave like a real human assistant:\n\nAsk clarifying questions only if really needed.\n\nWhen the user asks about emails, meetings, or todos, call the right tools.\n\nIf they ask “what happened today?” or “give me a daily briefing”, call multiple tools (emails + calendar + todos).\n\nKeep answers short, structured and action-oriented.\n\nImportant:\n\nNever make up emails or events. Only talk about what the tools return.\n\nIf tools return nothing, say that clearly (“No meetings found today”, etc.).\n\nWhen tools give too much data, summarize it into bullet points and top 3–5 actions.\n\nYou have access to tools. Use them whenever it helps answer the question."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        -240,
+        -16
+      ],
+      "id": "53883448-f7d5-459a-8051-d330137e69dc",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -288,
+        208
+      ],
+      "id": "4f44ab01-9746-44ce-82c0-ee31c2c1d631",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "Z3KBNtTjBIdiK0J9",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -160,
+        208
+      ],
+      "id": "dac27e79-beef-4179-9d99-1b99f9a42911",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "limit": 5,
+        "filters": {}
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        -32,
+        208
+      ],
+      "id": "e89fd53f-79b7-4d2b-a97e-989f63e5a8f1",
+      "name": "Get many messages in Gmail",
+      "webhookId": "52c032d4-6276-431b-8e27-cde8dc8335e8",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "fawaGAZiNywovSpX",
+          "name": "Gmal dmm practice"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many messages in Gmail": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "3f1e0350-0a8c-42f6-8790-fefaeb34a92f",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "19d68fe8a6f6fc1f2277f4efd0d93ed1478f86367c95a741531fcfab94f023b5"
+  },
+  "id": "wfnzEE1DDxf2tvEX",
+  "tags": []
+}

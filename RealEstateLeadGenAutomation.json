@@ -1,0 +1,406 @@
+{
+  "name": "RealEstateLeadGenAutomation",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Real Estate Business ",
+        "formDescription": "Please Enter your details and get your services done",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Name",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Phone",
+              "fieldType": "number"
+            },
+            {
+              "fieldLabel": "Email",
+              "fieldType": "email"
+            },
+            {
+              "fieldLabel": "Property_Type"
+            },
+            {
+              "fieldLabel": "Budget",
+              "fieldType": "number"
+            },
+            {
+              "fieldLabel": "Location"
+            },
+            {
+              "fieldLabel": "Message"
+            },
+            {
+              "fieldLabel": "Source"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.3,
+      "position": [
+        384,
+        -480
+      ],
+      "id": "fde440e6-5740-4e2e-8919-7ade8e456a24",
+      "name": "On form submission",
+      "webhookId": "9b4bdf85-711c-4ad6-bce7-35150f38747e"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1NNlFygX9Z4g64l4E5rVUGEGuliCdxY4WmK-U_QSWjRA",
+          "mode": "list",
+          "cachedResultName": "RealEstateLeads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NNlFygX9Z4g64l4E5rVUGEGuliCdxY4WmK-U_QSWjRA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NNlFygX9Z4g64l4E5rVUGEGuliCdxY4WmK-U_QSWjRA/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $json.Name }}",
+            "Phone": "={{ $json.Phone }}",
+            "Email": "={{ $json.Email }}",
+            "Property_Type": "={{ $json.Property_Type }}",
+            "Budget": "={{ $json.Budget }}",
+            "Location": "={{ $json.Location }}",
+            "Message": "={{ $json.Message }}",
+            "Source": "={{ $json.Source }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Property_Type",
+              "displayName": "Property_Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Budget",
+              "displayName": "Budget",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Location",
+              "displayName": "Location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Message",
+              "displayName": "Message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Source",
+              "displayName": "Source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        608,
+        -480
+      ],
+      "id": "9a104904-a728-4257-81b1-a99f8c14c0ee",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "B9pOhVKPNUUUZuYv",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "venumattipally@gmail.com",
+        "subject": "={{ $json.subject }}",
+        "message": "={{ $json.body }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1408,
+        -480
+      ],
+      "id": "fbaed000-89ea-4f26-82b1-9006d6246868",
+      "name": "Send a message",
+      "webhookId": "4399b4a4-79c2-45d9-9a0a-e4c8e9d450c8",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "fawaGAZiNywovSpX",
+          "name": "Gmal dmm practice"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are an AI assistant that writes professional follow-up emails for a real estate business.\nUse the lead data provided by the caller to create a concise, friendly, and professional email.\n\nInput tokens (these will be replaced by the caller):\n- Client Name: {{ $('On form submission').item.json.Name }}\n- Interested Location: {{ $('On form submission').item.json.Location }}\n- Property Type: {{ $('On form submission').item.json.Property_Type }}\n- Budget: {{ $('On form submission').item.json.Budget }}\n\nREQUIREMENTS — Read carefully:\n1) Output MUST be exactly one valid JSON object and nothing else. No explanation, no markdown, no code fences, no extra text.\n2) JSON structure MUST be:\n{\n  \"subject\": \"string\",\n  \"body\": \"string\"\n}\n3) The \"subject\" should be concise (<= 70 chars) and may contain the client's name or location.\n4) The \"body\" MUST be HTML-friendly and use <p>, <strong>, <ul>, <li>, <br/> as needed.\n5) The body must:\n   - Thank the client by name using the token {{ $('On form submission').item.json.Name }}\n   - Acknowledge the property details (use the tokens directly)\n   - Promise a team follow-up within 24 hours\n   - Include a short call to action (reply with preferred time)\n6) DO NOT replace the input tokens with example values. Use the tokens verbatim (so n8n can substitute values later).\n7) DO NOT wrap the JSON in quotes or return it as a string.\n8) If you cannot produce the JSON exactly, return nothing.\n\n\n\n\n\n\n\n"
+            }
+          ]
+        },
+        "jsonOutput": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        832,
+        -480
+      ],
+      "id": "ba88ea81-8955-484a-8c52-684660020e7e",
+      "name": "Message a model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "Z3KBNtTjBIdiK0J9",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\n// This code handles responses where the model returned a JSON string inside content.parts[0].text\n// It tries to parse directly, and if that fails it extracts the first {...} JSON substring and parses it.\n\nconst part = $json?.content?.parts?.[0]?.text ?? $json?.content?.parts?.[0] ?? null;\n\nif (!part) {\n  throw new Error('No text found in response node output at content.parts[0].text');\n}\n\nlet parsed;\ntry {\n  // try direct JSON parse (works when model returned raw JSON)\n  parsed = JSON.parse(part);\n} catch (err) {\n  // fallback: extract the first {...} block and parse\n  const match = part.match(/\\{[\\s\\S]*\\}/);\n  if (!match) {\n    throw new Error('Unable to find JSON object in model output');\n  }\n  try {\n    parsed = JSON.parse(match[0]);\n  } catch (err2) {\n    throw new Error('Found JSON-like substring but failed to parse: ' + err2.message);\n  }\n}\n\n// Ensure result has expected keys\nparsed.subject = parsed.subject ?? '';\nparsed.body = parsed.body ?? '';\n\n// Return as single item so next nodes can use {{$node[\"Parse OpenAI\"].json.subject}}\nreturn [{ json: parsed }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1184,
+        -480
+      ],
+      "id": "42591f97-ca37-4074-a2cb-1f0334b21ebf",
+      "name": "To parse the data "
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are an AI assistant that creates personalized WhatsApp follow-up messages for a real estate business.\n\nUse the lead data to create a warm, friendly, and concise WhatsApp message.\n\nInput data:\n- Client Name: {{ $('On form submission').item.json.Name }}\n- Interested Location: {{ $('On form submission').item.json.Location }}\n- Property Type: {{ $('On form submission').item.json.Property_Type }}\n- Budget: {{ $('On form submission').item.json.Budget }}\n\nREQUIREMENTS:\n1) Output MUST be exactly one valid JSON object. No explanation, no markdown, no code fences.\n2) JSON structure MUST be:\n{\n  \"message\": \"string\"\n}\n3) The message should:\n   - Greet the client by name using {{ $('On form submission').item.json.Name }}\n   - Reference their property interest (location, type, budget)\n   - Be friendly and conversational (suitable for WhatsApp)\n   - Keep it under 160 characters if possible\n   - Include a call to action (e.g., \"Reply YES if you'd like to schedule a viewing\")\n4) DO NOT replace the input tokens with example values. Use the tokens verbatim.\n5) DO NOT wrap the JSON in quotes.\n6) The message should feel personal and human, not corporate."
+            }
+          ]
+        },
+        "jsonOutput": true,
+        "options": {}
+      },
+      "id": "35bfcd09-72ab-4a51-a024-14a6b00a58f6",
+      "name": "Generate WhatsApp Message",
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        1632,
+        -480
+      ],
+      "credentials": {
+        "googlePalmApi": {
+          "id": "Z3KBNtTjBIdiK0J9",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const part = $json?.content?.parts?.[0]?.text ?? $json?.content?.parts?.[0] ?? null;\n\nif (!part) {\n  throw new Error('No text found in response node output');\n}\n\nlet parsed;\ntry {\n  parsed = JSON.parse(part);\n} catch (err) {\n  const match = part.match(/\\{[\\s\\S]*\\}/);\n  if (!match) {\n    throw new Error('Unable to find JSON object in model output');\n  }\n  try {\n    parsed = JSON.parse(match[0]);\n  } catch (err2) {\n    throw new Error('Failed to parse JSON: ' + err2.message);\n  }\n}\n\nparsed.message = parsed.message ?? '';\n\nreturn [{ json: parsed }];"
+      },
+      "id": "62d31a33-d3aa-4152-8d5b-b4afc1fe787f",
+      "name": "Parse WhatsApp Message",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1984,
+        -480
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "902761656251827",
+        "recipientPhoneNumber": "=91{{ $('Append row in sheet').item.json.Phone }}",
+        "textBody": "={{ $json.message }}",
+        "additionalFields": {}
+      },
+      "id": "53bd17a5-4302-4207-8872-91ebeef51af6",
+      "name": "Send WhatsApp Message",
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1.1,
+      "position": [
+        2208,
+        -480
+      ],
+      "webhookId": "d4d4eaed-1b07-44e9-99a6-910854b7070b",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "bFtaEsWLaNbd4tWd",
+          "name": "n8n.app.2. cloud permanent"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "To parse the data ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "To parse the data ": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "Generate WhatsApp Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate WhatsApp Message": {
+      "main": [
+        [
+          {
+            "node": "Parse WhatsApp Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse WhatsApp Message": {
+      "main": [
+        [
+          {
+            "node": "Send WhatsApp Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "d0e80bcc-bf82-4969-892f-2ac661592bc7",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "19d68fe8a6f6fc1f2277f4efd0d93ed1478f86367c95a741531fcfab94f023b5"
+  },
+  "id": "3pi40FPfjEUcNj2i",
+  "tags": []
+}

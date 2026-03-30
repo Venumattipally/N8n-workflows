@@ -1,0 +1,342 @@
+{
+  "name": "Helpful FAQ + Lead Capture Chat Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "options": {
+          "loadPreviousSession": "memory"
+        }
+      },
+      "id": "4b8237c5-339b-4c5d-aa9f-a1b5e65fbc38",
+      "name": "When chat message received",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        64,
+        0
+      ],
+      "webhookId": "b0a2de9f-d3de-4374-adc7-2ac71e7524ab"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "You are a helpful FAQ assistant. Your role is to answer user questions clearly and professionally.\n\nYour task is to:\n1. Answer user questions about our products/services\n2. Provide helpful information and guidance\n3. Identify when users express interest in learning more, getting a demo, or speaking with sales\n4. Be friendly, professional, and concise\n\nWhen a user shows interest (e.g., \"I want to learn more\", \"Can I get a demo?\", \"I'd like to speak with someone\"), acknowledge their interest and let them know someone will reach out to them."
+        }
+      },
+      "id": "ce5c70da-3fec-4b0f-a626-6c0da31c46a4",
+      "name": "FAQ Assistant Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        416,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "id": "4549688e-e6c5-43f3-87cf-6316fa5dc1e9",
+      "name": "OpenAI GPT-4",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        496,
+        224
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "5451b6ae-6365-48a9-9c00-79031d32094f",
+      "name": "Conversation Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        144,
+        224
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "id-1",
+              "leftValue": "={{ $('FAQ Assistant Agent').item.json.chatInput }}",
+              "rightValue": "demo",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "id-2",
+              "leftValue": "={{ $('FAQ Assistant Agent').item.json.chatInput }}",
+              "rightValue": "interested",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "id-3",
+              "leftValue": "={{ $('FAQ Assistant Agent').item.json.chatInput }}",
+              "rightValue": "learn more",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "id-4",
+              "leftValue": "={{ $('FAQ Assistant Agent').item.json.chatInput }}",
+              "rightValue": "contact",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "id-5",
+              "leftValue": "={{ $('FAQ Assistant Agent').item.json.chatInput }}",
+              "rightValue": "sales",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "id-6",
+              "leftValue": "={{ $('FAQ Assistant Agent').item.json.chatInput }}",
+              "rightValue": "pricing",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "id-7",
+              "leftValue": "={{ $('FAQ Assistant Agent').item.json.chatInput }}",
+              "rightValue": "buy",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "id-8",
+              "leftValue": "={{ $('FAQ Assistant Agent').item.json.chatInput }}",
+              "rightValue": "purchase",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "id-9",
+              "leftValue": "={{ $('FAQ Assistant Agent').item.json.chatInput }}",
+              "rightValue": "sign up",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "id": "4581a5c8-c7e7-4e59-b0bc-b40f9cfa923b",
+      "name": "Check if User is Interested",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        768,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "sessionId",
+              "value": "={{ $json.sessionId }}",
+              "type": "string"
+            },
+            {
+              "id": "id-2",
+              "name": "userMessage",
+              "value": "={{ $json.chatInput }}",
+              "type": "string"
+            },
+            {
+              "id": "id-3",
+              "name": "agentResponse",
+              "value": "={{ $json.output }}",
+              "type": "string"
+            },
+            {
+              "id": "id-4",
+              "name": "timestamp",
+              "value": "={{ $now.toISO() }}",
+              "type": "string"
+            },
+            {
+              "id": "id-5",
+              "name": "leadStatus",
+              "value": "Interested",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "f15f2637-1ebe-4ce1-a0d0-ea345a0102c2",
+      "name": "Prepare Lead Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        992,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "<__PLACEHOLDER_VALUE__Your Google Sheets Document ID__>"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "<__PLACEHOLDER_VALUE__Sheet name (e.g., Leads)__>"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "sessionId"
+          ],
+          "schema": []
+        },
+        "options": {}
+      },
+      "id": "56e0ca31-9117-4b08-9643-9e706dc9359e",
+      "name": "Save Lead to Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1216,
+        0
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "B9pOhVKPNUUUZuYv",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "FAQ Assistant Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI GPT-4": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "FAQ Assistant Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Conversation Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "FAQ Assistant Agent",
+            "type": "ai_memory",
+            "index": 0
+          },
+          {
+            "node": "When chat message received",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FAQ Assistant Agent": {
+      "main": [
+        [
+          {
+            "node": "Check if User is Interested",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check if User is Interested": {
+      "main": [
+        [
+          {
+            "node": "Prepare Lead Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Lead Data": {
+      "main": [
+        [
+          {
+            "node": "Save Lead to Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "0c493bc9-5b01-45df-8fa9-f19c591353d9",
+  "meta": {
+    "instanceId": "19d68fe8a6f6fc1f2277f4efd0d93ed1478f86367c95a741531fcfab94f023b5"
+  },
+  "id": "9FiCmN32AefMpG8b",
+  "tags": []
+}

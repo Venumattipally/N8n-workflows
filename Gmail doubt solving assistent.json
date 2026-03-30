@@ -1,0 +1,102 @@
+{
+  "name": "Gmail doubt solving assistent",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "filters": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -496,
+        -128
+      ],
+      "id": "cc3a015e-8820-48ab-852d-2f89c91bf38e",
+      "name": "Check for new mail",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "fawaGAZiNywovSpX",
+          "name": "Gmal dmm practice"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get"
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -304,
+        -128
+      ],
+      "id": "42b680d0-44e5-4f4f-a6a6-8e30f8949aee",
+      "name": "Get a message",
+      "webhookId": "958a0dfb-9802-42f6-a7f5-190918796a6d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "fawaGAZiNywovSpX",
+          "name": "Gmal dmm practice"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "You are an email reply assistant :",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        -96,
+        -128
+      ],
+      "id": "13a80fd1-90db-4d49-ad90-9f2a6c4fe8ea",
+      "name": "AI Agent"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Check for new mail": {
+      "main": [
+        [
+          {
+            "node": "Get a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a message": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "b0d74758-349c-458c-b1bd-d78cd04b1f0a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "19d68fe8a6f6fc1f2277f4efd0d93ed1478f86367c95a741531fcfab94f023b5"
+  },
+  "id": "vt0cRYNwyFeLephM",
+  "tags": []
+}

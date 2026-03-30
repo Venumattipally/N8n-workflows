@@ -1,0 +1,381 @@
+{
+  "name": "AI-Powered Lead Generation and Qualification with Auto-Scheduling",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Get in Touch - Let's Discuss Your Needs",
+        "formDescription": "Fill out this form and we'll get back to you shortly",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Full Name",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Email Address",
+              "fieldType": "email",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Company Name",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Company Size",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "1-10 employees"
+                  },
+                  {
+                    "option": "11-50 employees"
+                  },
+                  {
+                    "option": "51-200 employees"
+                  },
+                  {
+                    "option": "201-500 employees"
+                  },
+                  {
+                    "option": "500+ employees"
+                  }
+                ]
+              }
+            },
+            {
+              "fieldLabel": "What challenges are you facing?",
+              "fieldType": "textarea",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Budget Range",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Under $5,000"
+                  },
+                  {
+                    "option": "$5,000 - $15,000"
+                  },
+                  {
+                    "option": "$15,000 - $50,000"
+                  },
+                  {
+                    "option": "$50,000+"
+                  },
+                  {
+                    "option": "Not sure yet"
+                  }
+                ]
+              }
+            },
+            {
+              "fieldLabel": "Timeline",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Urgent (within 1 month)"
+                  },
+                  {
+                    "option": "Soon (1-3 months)"
+                  },
+                  {
+                    "option": "Planning (3-6 months)"
+                  },
+                  {
+                    "option": "Exploring options"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "options": {
+          "appendAttribution": false,
+          "buttonLabel": "Submit",
+          "respondWithOptions": {
+            "values": {
+              "formSubmittedText": "Thank you! We've received your information and will be in touch soon."
+            }
+          }
+        }
+      },
+      "id": "bcc045f6-918e-471d-8723-5516f70c3691",
+      "name": "Lead Generation Form",
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.3,
+      "position": [
+        1376,
+        -144
+      ],
+      "webhookId": "5b27963d-0164-4988-a601-e754cd4dceb1",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "highScoreThreshold",
+              "value": 7,
+              "type": "number"
+            },
+            {
+              "id": "id-2",
+              "name": "calendarLookAheadDays",
+              "value": 14,
+              "type": "number"
+            },
+            {
+              "id": "id-3",
+              "name": "meetingDurationMinutes",
+              "value": 15,
+              "type": "number"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "00d10006-9519-4884-8d00-7afddd6d2212",
+      "name": "Workflow Configuration",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1520,
+        48
+      ]
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "Leads"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {}
+        },
+        "options": {}
+      },
+      "id": "0130c205-e436-4c2d-93e1-d666e29a6232",
+      "name": "Store Lead in Data Table",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1,
+      "position": [
+        1728,
+        -48
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Lead Information:\nName: {{ $json['Full Name'] }}\nCompany: {{ $json['Company Name'] }}\nCompany Size: {{ $json['Company Size'] }}\nChallenges: {{ $json['What challenges are you facing?'] }}\nBudget: {{ $json['Budget Range'] }}\nTimeline: {{ $json['Timeline'] }}\n\nAnalyze this lead and provide a qualification score.",
+        "options": {
+          "systemMessage": "You are a lead qualification expert. Analyze the provided lead information and assign a qualification score from 1-10 based on these criteria:\n\n- Budget Range (weight: 30%): Higher budgets = higher score\n- Timeline (weight: 25%): More urgent timelines = higher score\n- Company Size (weight: 20%): Larger companies = higher score\n- Challenge Clarity (weight: 25%): Specific, detailed challenges = higher score\n\nProvide your response in this exact format:\nLead Score: [number from 1-10]\nReasoning: [brief explanation of the score]\nKey Strengths: [what makes this lead promising]\nConcerns: [any red flags or concerns]"
+        }
+      },
+      "id": "f05090da-a839-4627-8840-d2498f119553",
+      "name": "AI Lead Qualifier",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        1920,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "id": "31790da5-d545-4645-973a-25f92d34d218",
+      "name": "OpenAI Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        2048,
+        272
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "id-1",
+              "leftValue": "={{ $json.output }}",
+              "rightValue": "Lead Score:",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "id-2",
+              "leftValue": "={{ Number($json.output.match(/Lead Score:\\s*(\\d+)/)?.[1] || 0) }}",
+              "rightValue": "={{ $('Workflow Configuration').first().json.highScoreThreshold }}",
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "8c6614ae-311e-42d5-b57c-88d5c3358bf5",
+      "name": "Check Lead Score",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2320,
+        48
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "calendar",
+        "calendar": {
+          "__rl": true,
+          "mode": "id",
+          "value": "primary"
+        },
+        "timeMin": "={{ $now.toISO() }}",
+        "timeMax": "={{ $now.plus({ days: $('Workflow Configuration').first().json.calendarLookAheadDays }).toISO() }}",
+        "options": {}
+      },
+      "id": "c22e8298-2cea-4b2e-bafc-10ca783dbe16",
+      "name": "Find Free Calendar Slot",
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        2544,
+        48
+      ]
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Store Lead in Data Table').first().json['Email Address'] }}",
+        "subject": "Great to connect! Let's schedule a quick call",
+        "message": "=<p>Hi {{ $('Store Lead in Data Table').first().json['Full Name'].split(' ')[0] }},</p>\n\n<p>Thank you for reaching out! Based on your inquiry, I'd love to schedule a brief 15-minute call to discuss how we can help with {{ $('Store Lead in Data Table').first().json['What challenges are you facing?'] }}.</p>\n\n<p>I have availability in the coming days. Please use this link to book a time that works best for you:</p>\n\n<p><strong><__PLACEHOLDER_VALUE__Calendar booking link__></strong></p>\n\n<p>Looking forward to speaking with you!</p>\n\n<p>Best regards</p>",
+        "options": {}
+      },
+      "id": "1f8ac9f3-7eb1-4b7a-9852-c36c54232088",
+      "name": "Send Email to High-Score Lead",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        2768,
+        48
+      ],
+      "webhookId": "d497e1c4-23b8-46d4-a000-515918d3f6f0"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Lead Generation Form": {
+      "main": [
+        [
+          {
+            "node": "Workflow Configuration",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Workflow Configuration": {
+      "main": [
+        [
+          {
+            "node": "Store Lead in Data Table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store Lead in Data Table": {
+      "main": [
+        [
+          {
+            "node": "AI Lead Qualifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Lead Qualifier",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Lead Qualifier": {
+      "main": [
+        [
+          {
+            "node": "Check Lead Score",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Lead Score": {
+      "main": [
+        [
+          {
+            "node": "Find Free Calendar Slot",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find Free Calendar Slot": {
+      "main": [
+        [
+          {
+            "node": "Send Email to High-Score Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "e05275fb-1223-4ede-8607-eb70319ced0c",
+  "meta": {
+    "instanceId": "19d68fe8a6f6fc1f2277f4efd0d93ed1478f86367c95a741531fcfab94f023b5"
+  },
+  "id": "URN5gVc9gj1Y91Nw",
+  "tags": []
+}

@@ -1,0 +1,415 @@
+{
+  "name": "Whastapp Lead Qualification System",
+  "nodes": [
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1YO1I4n65wwEbZ0cwPiARuxR7uubNpGfCixA3gNpMDOQ",
+          "mode": "list",
+          "cachedResultName": "Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1YO1I4n65wwEbZ0cwPiARuxR7uubNpGfCixA3gNpMDOQ/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1YO1I4n65wwEbZ0cwPiARuxR7uubNpGfCixA3gNpMDOQ/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "status",
+              "lookupValue": "new"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -48,
+        144
+      ],
+      "id": "a8fe6a42-2ada-4b46-83a1-b59dcb83e0c8",
+      "name": "Get row(s) in sheet",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "B9pOhVKPNUUUZuYv",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6a5d4af2-82be-4411-8857-a58f0d45caa8",
+              "name": "message",
+              "value": "=Hi {{ $json.contact_person }} || {{ $json.name }}, I'm from a small web & automation studio.  We help {{$json[\"business_type\"]}} like yours get more customers with modern websites & simple automations.  Is it okay if I ask 3 quick questions to see if this can really help your business?",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        176,
+        144
+      ],
+      "id": "d4b689fe-cf3a-44e0-872e-545edf24fcaf",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "content": "## just manual execution for nuw",
+        "height": 304
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -352,
+        0
+      ],
+      "typeVersion": 1,
+      "id": "6b1bad1a-37c4-4c08-b761-862758620103",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Google sheet Read operation\nThis node fetches the data from google sheets when the status is equals to \"new\"\n",
+        "height": 336
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -80,
+        -16
+      ],
+      "typeVersion": 1,
+      "id": "225c3805-5315-44c5-9f76-82dbc8ae5ec1",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Send operation\nthis node sends cold message to new lead ",
+        "height": 352
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        336,
+        -32
+      ],
+      "typeVersion": 1,
+      "id": "152c4b5e-d776-44de-a535-1df9cce05a74",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "902761656251827",
+        "recipientPhoneNumber": "=918008544647",
+        "textBody": "={{ $json.message }}{{ $json.message }}",
+        "additionalFields": {
+          "previewUrl": false
+        }
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1.1,
+      "position": [
+        400,
+        144
+      ],
+      "id": "3dd85bc6-57f2-4e89-b0df-daade2dc1a29",
+      "name": "Send message",
+      "webhookId": "4bce714e-e36a-4987-b394-c59dad8c2a60",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "sjMlukc4JYk4QjG2",
+          "name": "n8n.app.2. cloud temperory"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -352,
+        128
+      ],
+      "id": "80298598-9591-497c-a3e2-43a1a3b2ab02",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1YO1I4n65wwEbZ0cwPiARuxR7uubNpGfCixA3gNpMDOQ",
+          "mode": "list",
+          "cachedResultName": "Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1YO1I4n65wwEbZ0cwPiARuxR7uubNpGfCixA3gNpMDOQ/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1YO1I4n65wwEbZ0cwPiARuxR7uubNpGfCixA3gNpMDOQ/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "name": "=",
+            "id": "={{ $('Get row(s) in sheet').item.json.id }}",
+            "status": "contacted",
+            "current_step": "0",
+            "last_message_at": "={{$now}}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "contact_person",
+              "displayName": "contact_person",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "whatsapp_number",
+              "displayName": "whatsapp_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "business_type",
+              "displayName": "business_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "source",
+              "displayName": "source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "current_step",
+              "displayName": "current_step",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "q1_answer",
+              "displayName": "q1_answer",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "q2_answer",
+              "displayName": "q2_answer",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "q3_answer",
+              "displayName": "q3_answer",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "q4_answer",
+              "displayName": "q4_answer",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "qualification_score",
+              "displayName": "qualification_score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "priority",
+              "displayName": "priority",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "summary",
+              "displayName": "summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "last_message_at",
+              "displayName": "last_message_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        624,
+        144
+      ],
+      "id": "df1f8b44-fd52-4e73-a1be-b2ae4b5b4af1",
+      "name": "Update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "B9pOhVKPNUUUZuYv",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Send message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send message": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "2afc63bc-e324-41f6-8e15-c1718670eda0",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "19d68fe8a6f6fc1f2277f4efd0d93ed1478f86367c95a741531fcfab94f023b5"
+  },
+  "id": "abXWgmhHzfEguy2c",
+  "tags": []
+}

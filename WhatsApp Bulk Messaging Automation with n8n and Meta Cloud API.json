@@ -1,0 +1,491 @@
+{
+  "name": "WhatsApp Bulk Messaging Automation with n8n and Meta Cloud API",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "0e95f4ea-2db8-4c2a-8f7c-7bba6ef5e8b4",
+      "name": "Start Workflow",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1120,
+        -528
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "whatsappPhoneNumberId",
+              "value": "902761656251827",
+              "type": "string"
+            },
+            {
+              "id": "id-2",
+              "name": "whatsappAccessToken",
+              "value": "EAAb78jJFvlsBQHgofi3yoM07VL16oQGx0BGouKcRxMgR5jIt7f4NFbmBg2ZCtjwwaZA4IAAxFkYl6CfLIYebbGI6ybeZAZAHqiLFBGiVeGokrXGy3hdXjHGlVFCVx2nxc1XZCbSjxxDxhOWZCX4lOt9yC0Ki1W5HpDpLe1ek4qDMZAfUdIu7e5grYlONwfgo0ZBSLZCu7ZBCVDgCqF1ZBrRwbS0oQWlrhhcZB4fbtw5ukqHZC",
+              "type": "string"
+            },
+            {
+              "id": "id-3",
+              "name": "templateName",
+              "value": "hello_world",
+              "type": "string"
+            },
+            {
+              "id": "id-4",
+              "name": "templateLanguage",
+              "value": "en_US",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "d8a8dac1-c099-481e-a0f5-2290889017f2",
+      "name": "Workflow Configuration",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -896,
+        -528
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "16Ba7SaQEk1dXhT9yMThfhBkArfDDiMQB77lY3yM1_Z0",
+          "mode": "list",
+          "cachedResultName": "Leads for Whatsapp  Bulk messaging ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/16Ba7SaQEk1dXhT9yMThfhBkArfDDiMQB77lY3yM1_Z0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/16Ba7SaQEk1dXhT9yMThfhBkArfDDiMQB77lY3yM1_Z0/edit#gid=0"
+        },
+        "options": {}
+      },
+      "id": "d893bb06-95b5-48bc-95f1-d77e5efad175",
+      "name": "Read Customer List",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -672,
+        -528
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "B9pOhVKPNUUUZuYv",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v21.0/{{ $('Workflow Configuration').first().json.whatsappPhoneNumberId }}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $('Workflow Configuration').first().json.whatsappAccessToken }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"messaging_product\": \"whatsapp\",\n  \"to\": \"{{ $json['Whatsapp Number '] }}\",\n  \"type\": \"template\",\n  \"template\": {\n    \"name\": \"{{ $('Workflow Configuration').item.json.templateName }}\",\n    \"language\": {\n      \"code\": \"{{ $('Workflow Configuration').item.json.templateLanguage }}\"\n    }\n   \n  }\n}\n",
+        "options": {}
+      },
+      "id": "2475422e-6daa-4314-a02e-342ee5dc6f2d",
+      "name": "Send WhatsApp Message",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -448,
+        -528
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "id-1",
+              "leftValue": "={{ $('Send WhatsApp Message').item.json.messages }}",
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "e348521d-1355-49f8-ad70-43ce1f8d3e5f",
+      "name": "Check Send Status",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -224,
+        -528
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "status",
+              "value": "Sent",
+              "type": "string"
+            },
+            {
+              "id": "id-2",
+              "name": "message_id",
+              "value": "={{ $json.messages[0].id }}",
+              "type": "string"
+            },
+            {
+              "id": "id-3",
+              "name": "timestamp",
+              "value": "={{ $now.toISO() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "f24acc6e-5dd6-4a7b-a676-5150d6b15e2d",
+      "name": "Log Success",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        0,
+        -624
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "status",
+              "value": "Failed",
+              "type": "string"
+            },
+            {
+              "id": "id-2",
+              "name": "error_message",
+              "value": "={{ $json.error?.message || \"Unknown error\" }}",
+              "type": "string"
+            },
+            {
+              "id": "id-3",
+              "name": "timestamp",
+              "value": "={{ $now.toISO() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "000fd353-729f-4d02-82c8-7f5632fd27f1",
+      "name": "Log Failure",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        0,
+        -432
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "16Ba7SaQEk1dXhT9yMThfhBkArfDDiMQB77lY3yM1_Z0",
+          "mode": "list",
+          "cachedResultName": "Leads for Whatsapp  Bulk messaging ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/16Ba7SaQEk1dXhT9yMThfhBkArfDDiMQB77lY3yM1_Z0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/16Ba7SaQEk1dXhT9yMThfhBkArfDDiMQB77lY3yM1_Z0/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "row_number": 0,
+            "Sent Status ": "Succcess",
+            "Whatsapp Number ": "={{ $('Read Customer List').item.json['Whatsapp Number '] }}"
+          },
+          "matchingColumns": [
+            "Whatsapp Number "
+          ],
+          "schema": [
+            {
+              "id": "name ",
+              "displayName": "name ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Whatsapp Number ",
+              "displayName": "Whatsapp Number ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Sent Status ",
+              "displayName": "Sent Status ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "8c7e51fc-dc4e-49e4-81e2-d21c40440db0",
+      "name": "Update Success Status",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        224,
+        -624
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "B9pOhVKPNUUUZuYv",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "16Ba7SaQEk1dXhT9yMThfhBkArfDDiMQB77lY3yM1_Z0",
+          "mode": "list",
+          "cachedResultName": "Leads for Whatsapp  Bulk messaging ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/16Ba7SaQEk1dXhT9yMThfhBkArfDDiMQB77lY3yM1_Z0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/16Ba7SaQEk1dXhT9yMThfhBkArfDDiMQB77lY3yM1_Z0/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Whatsapp Number ": "8008544647",
+            "Sent Status ": "Failure"
+          },
+          "matchingColumns": [
+            "phone_number"
+          ],
+          "schema": [
+            {
+              "id": "name ",
+              "displayName": "name ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Whatsapp Number ",
+              "displayName": "Whatsapp Number ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Sent Status ",
+              "displayName": "Sent Status ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "90819334-ec4c-4f50-8dff-469aa1fd9763",
+      "name": "Update Failure Status",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        224,
+        -432
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "B9pOhVKPNUUUZuYv",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Start Workflow": {
+      "main": [
+        [
+          {
+            "node": "Workflow Configuration",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Workflow Configuration": {
+      "main": [
+        [
+          {
+            "node": "Read Customer List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Customer List": {
+      "main": [
+        [
+          {
+            "node": "Send WhatsApp Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send WhatsApp Message": {
+      "main": [
+        [
+          {
+            "node": "Check Send Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Send Status": {
+      "main": [
+        [
+          {
+            "node": "Log Success",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Log Failure",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Success": {
+      "main": [
+        [
+          {
+            "node": "Update Success Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Failure": {
+      "main": [
+        [
+          {
+            "node": "Update Failure Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "50e4b7d5-ab9f-4131-8976-637f292d3380",
+  "meta": {
+    "instanceId": "19d68fe8a6f6fc1f2277f4efd0d93ed1478f86367c95a741531fcfab94f023b5"
+  },
+  "id": "lPQulH1e1Uj4ntMO",
+  "tags": []
+}
